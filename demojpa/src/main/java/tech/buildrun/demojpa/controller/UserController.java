@@ -2,6 +2,7 @@ package tech.buildrun.demojpa.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,5 +37,13 @@ public class UserController {
         var users = userService.findAll();
 
         return ResponseEntity.ok(users);
+    }
+
+    @GetMapping(path = "/{userId}")
+    public ResponseEntity<UserEntity> findById(@PathVariable("userId") Long userId) {
+
+        var user = userService.findById(userId);
+
+        return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 }
