@@ -56,6 +56,17 @@ public class UserService {
         return user;
     }
 
+    public boolean deleteById(Long userId) {
+
+        var exists = userRepository.existsById(userId);
+
+        if (exists) {
+            userRepository.deleteById(userId);
+        }
+
+        return exists;
+    }
+
     private static void updateFields(UpdateUserDto dto, Optional<UserEntity> user) {
         if (hasText(dto.name())) {
             user.get().setName(dto.name());
