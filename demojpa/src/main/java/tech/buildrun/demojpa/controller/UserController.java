@@ -8,14 +8,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import tech.buildrun.demojpa.controller.dto.ApiResponse;
 import tech.buildrun.demojpa.controller.dto.CreateUserDto;
+import tech.buildrun.demojpa.controller.dto.PaginationResponse;
 import tech.buildrun.demojpa.controller.dto.UpdateUserDto;
 import tech.buildrun.demojpa.entitiy.UserEntity;
 import tech.buildrun.demojpa.service.UserService;
 
 import java.net.URI;
-import java.util.List;
 
 @RestController
 @RequestMapping(path = "/users")
@@ -35,11 +37,20 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<UserEntity>> listAll() {
+    public ResponseEntity<ApiResponse<UserEntity>> listAll(@RequestParam(name = "page", defaultValue = "0") Integer page,
+                                                           @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize) {
 
-        var users = userService.findAll();
+        var pageResponse = userService.findAll(page, pageSize);
 
-        return ResponseEntity.ok(users);
+        return ResponseEntity.ok(new ApiResponse<>(
+                pageResponse.getContent(),
+                new PaginationResponse(
+                        pageResponse.getNumber(),
+                        pageResponse.getSize(),
+                        pageResponse.getTotalElements(),
+                        pageResponse.getTotalPages()
+                )
+        ));
     }
 
     @GetMapping(path = "/{userId}")

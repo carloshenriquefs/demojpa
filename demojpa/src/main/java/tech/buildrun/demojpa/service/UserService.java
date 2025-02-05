@@ -1,5 +1,7 @@
 package tech.buildrun.demojpa.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import tech.buildrun.demojpa.controller.dto.CreateUserDto;
 import tech.buildrun.demojpa.controller.dto.UpdateUserDto;
@@ -7,7 +9,6 @@ import tech.buildrun.demojpa.entitiy.UserEntity;
 import tech.buildrun.demojpa.repository.UserRepository;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 import static java.util.Objects.isNull;
@@ -34,8 +35,11 @@ public class UserService {
         return userRepository.save(entity);
     }
 
-    public List<UserEntity> findAll() {
-        return userRepository.findAll();
+    public Page<UserEntity> findAll(Integer page, Integer pageSize) {
+
+        var pageRequest = PageRequest.of(page, pageSize);
+
+        return userRepository.findAll(pageRequest);
     }
 
     public Optional<UserEntity> findById(Long userId) {
