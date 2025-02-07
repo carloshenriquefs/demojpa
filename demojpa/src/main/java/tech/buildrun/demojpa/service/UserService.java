@@ -2,6 +2,7 @@ package tech.buildrun.demojpa.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import tech.buildrun.demojpa.controller.dto.CreateUserDto;
 import tech.buildrun.demojpa.controller.dto.UpdateUserDto;
@@ -35,9 +36,15 @@ public class UserService {
         return userRepository.save(entity);
     }
 
-    public Page<UserEntity> findAll(Integer page, Integer pageSize) {
+    public Page<UserEntity> findAll(Integer page, Integer pageSize, String orderBy) {
 
-        var pageRequest = PageRequest.of(page, pageSize);
+        var direction = Sort.Direction.DESC;
+
+        if (orderBy.equalsIgnoreCase("asc")) {
+            direction = Sort.Direction.ASC;
+        }
+
+        var pageRequest = PageRequest.of(page, pageSize, direction, "createdAt");
 
         return userRepository.findAll(pageRequest);
     }
